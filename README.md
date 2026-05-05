@@ -1,6 +1,6 @@
 # ping_pong
 
-Ping Pong oyun denemesi
+Ping Pong oyun denemesi https://alperakbulak.github.io/ping_pong/
 
 ## Getting Started
 
