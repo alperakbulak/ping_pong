@@ -191,6 +191,14 @@ class _GameScreenState extends State<GameScreen>
     return KeyEventResult.handled;
   }
 
+  void _onPointerMove(PointerEvent event) {
+    if (!_initialized) return;
+    setState(() {
+      _leftPaddleY = (event.localPosition.dy - GamePainter.paddleHeight / 2)
+          .clamp(0.0, _gameSize.height - GamePainter.paddleHeight);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,15 +210,19 @@ class _GameScreenState extends State<GameScreen>
           builder: (context, constraints) {
             final size = Size(constraints.maxWidth, constraints.maxHeight);
             _ensureInitialized(size);
-            return CustomPaint(
-              painter: GamePainter(
-                ballPosition: _ballPosition,
-                leftPaddleY: _leftPaddleY,
-                rightPaddleY: _rightPaddleY,
-                leftScore: _leftScore,
-                rightScore: _rightScore,
+            return Listener(
+              onPointerDown: _onPointerMove,
+              onPointerMove: _onPointerMove,
+              child: CustomPaint(
+                painter: GamePainter(
+                  ballPosition: _ballPosition,
+                  leftPaddleY: _leftPaddleY,
+                  rightPaddleY: _rightPaddleY,
+                  leftScore: _leftScore,
+                  rightScore: _rightScore,
+                ),
+                size: size,
               ),
-              size: size,
             );
           },
         ),
