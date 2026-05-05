@@ -191,10 +191,10 @@ class _GameScreenState extends State<GameScreen>
     return KeyEventResult.handled;
   }
 
-  void _onPointerMove(PointerEvent event) {
+  void _setPaddleFromY(double y) {
     if (!_initialized) return;
     setState(() {
-      _leftPaddleY = (event.localPosition.dy - GamePainter.paddleHeight / 2)
+      _leftPaddleY = (y - GamePainter.paddleHeight / 2)
           .clamp(0.0, _gameSize.height - GamePainter.paddleHeight);
     });
   }
@@ -210,18 +210,22 @@ class _GameScreenState extends State<GameScreen>
           builder: (context, constraints) {
             final size = Size(constraints.maxWidth, constraints.maxHeight);
             _ensureInitialized(size);
-            return Listener(
-              onPointerDown: _onPointerMove,
-              onPointerMove: _onPointerMove,
-              child: CustomPaint(
-                painter: GamePainter(
-                  ballPosition: _ballPosition,
-                  leftPaddleY: _leftPaddleY,
-                  rightPaddleY: _rightPaddleY,
-                  leftScore: _leftScore,
-                  rightScore: _rightScore,
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (d) => _setPaddleFromY(d.localPosition.dy),
+              onPanStart: (d) => _setPaddleFromY(d.localPosition.dy),
+              onPanUpdate: (d) => _setPaddleFromY(d.localPosition.dy),
+              child: SizedBox.expand(
+                child: CustomPaint(
+                  painter: GamePainter(
+                    ballPosition: _ballPosition,
+                    leftPaddleY: _leftPaddleY,
+                    rightPaddleY: _rightPaddleY,
+                    leftScore: _leftScore,
+                    rightScore: _rightScore,
+                  ),
+                  size: size,
                 ),
-                size: size,
               ),
             );
           },
