@@ -1,6 +1,6 @@
 # ping_pong
 
-A new Flutter project.
+Ping Pong oyun denemesi
 
 ## Getting Started
 
